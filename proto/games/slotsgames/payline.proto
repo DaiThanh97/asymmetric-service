@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package schema;
+
+option java_multiple_files = true;
+option java_package = "com.gadgame.schema.protobuf";
+option java_outer_classname = "Payline";
+option go_package = "models/";
+
+message PaylineModel {
+    string id = 1;
+    repeated int32 row_index = 2;
+}
+
+message CreatePaylineRequest {
+    repeated int32 row_index = 1;
+    string game_id = 2;
+}
+
+message CreatePaylineResponse {
+    PaylineModel payline = 1;
+}
+
+message RemovePaylineRequest {
+    string payline_id = 1;
+    string game_id = 2;
+}
+
+message RemovePaylineResponse {
+}

@@ -1,0 +1,208 @@
+syntax = "proto3";
+
+package schema;
+
+option java_package = "com.gadgame.schema.protobuf";
+option java_outer_classname = "Game";
+option go_package = "models/";
+import "google/protobuf/timestamp.proto";
+import "games/slotsgames/asymmetric_reels_slots_game.proto";
+import "games/slotsgames/accumulate_multiplier_slots_game.proto";
+import "games/slotsgames/slots_game.proto";
+import "games/slotsgames/symbol.proto";
+import "games/slotsgames/game_progress.proto";
+import "games/slotsgames/game_result.proto";
+import "games/slotsgames/payline.proto";
+import "games/slotsgames/scatter_prize.proto";
+
+
+
+import "user.proto";
+
+message GameModel {
+  string id = 1;
+  string name = 2;
+  oneof game {
+    SlotsGameModel slots_game = 3;
+  }
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp deleted_at = 10;
+}
+
+message GameProgressModel {
+  string id = 1;
+  string game_id = 2;
+  string player_id = 3;
+  CurrencyModel currency = 4;
+  oneof progress {
+    SlotsGameProgressModel slots_game_progress = 5;
+  }
+}
+
+message GameVersionModel {
+  int64 id = 1;
+  string version_name = 2;
+  string android_url = 3;
+  string android_banner_url = 4;
+  string ios_url = 5;
+  string ios_banner_url = 6;
+  string windows_url = 7;
+  string windows_banner_url = 8;
+  string web_url = 9;
+  string web_banner_url = 10;
+  string game_id = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+  google.protobuf.Timestamp deleted_at = 14;
+}
+
+message CreateGameResponse {
+  GameModel game = 1;
+}
+
+message UpdateGameResponse {
+  GameModel game = 1;
+}
+
+message AddSlotsGameSymbolResponse {
+  GameModel game = 1;
+}
+
+message UpdateSlotsGameSymbolResponse {
+  GameModel game = 1;
+}
+
+message UploadGameVersionRequest {
+  string game_id = 1;
+  string version_name = 2;
+  bytes android_file = 3;
+  bytes android_banner_file = 4;
+  bytes ios_file = 5;
+  bytes ios_banner_file = 6;
+  bytes windows_file = 7;
+  bytes windows_banner_file = 8;
+  bytes web_file = 9;
+  bytes web_banner_file = 10;
+}
+
+message UploadGameVersionResponse {
+  GameVersionModel game_version = 1;
+}
+
+message GetGameRequest {
+  string game_id = 1;
+}
+
+message GetGameResponse {
+  GameModel game = 1;
+}
+
+message GetGameProgressRequest {
+  string game_id = 1;
+  CurrencyModel currency = 2;
+}
+
+message GetGameProgressResponse {
+  GameProgressModel game_progress = 1;
+}
+
+message GetAllGameIdsRequest {
+}
+
+message GetAllGameIdsResponse {
+  repeated string game_id = 1;
+}
+
+message SpinRequest {
+  string game_id = 1;
+}
+
+message SpinResponse {
+  SlotsGameResultModel result = 1;
+}
+
+message SetBetRequest {
+  string game_id = 1;
+  double bet_value = 2;
+}
+
+message SetBetResponse {
+  GameProgressModel game_progress = 1;
+}
+
+message SelectPaylineRequest {
+  string game_id = 1;
+  repeated string payline_ids = 2;
+}
+
+message SelectPaylineResponse {
+  GameProgressModel game_progress = 1;
+}
+
+
+service GameService {
+  rpc UploadGameVersion(UploadGameVersionRequest) returns (UploadGameVersionResponse) {};
+
+  rpc UpdateSimpleScatterPrize(UpdateSimpleScatterPrizeRequest) returns (UpdateScatterPrizeResponse) {};
+  rpc UpdateAccumulateMultiplierScatterPrize(UpdateAccumulateMultiplierScatterPrizeRequest) returns (UpdateScatterPrizeResponse) {};
+
+  rpc CreateAccumulateMultiplierSlotsGame(CreateAccumulateMultiplierSlotsGameRequest) returns (CreateGameResponse) {};
+  rpc UpdateAccumulateMultiplierSlotsGame(UpdateAccumulateMultiplierSlotsGameRequest) returns (UpdateGameResponse) {};
+  rpc AddAccumulateMultiplierSlotsGameSymbol(AddAccumulateMultiplierSlotsGameSymbolRequest) returns (AddSlotsGameSymbolResponse) {};
+  rpc UpdateAccumulateMultiplierSlotsGameSymbol(UpdateAccumulateMultiplierSlotsGameSymbolRequest) returns (UpdateSlotsGameSymbolResponse) {};
+
+  rpc CreateAsymmetricReelsSlotsGame(CreateAsymmetricReelsSlotsGameRequest) returns (CreateGameResponse) {};
+  rpc UpdateAsymmetricReelsSlotsGame(UpdateAsymmetricReelsSlotsGameRequest) returns (UpdateGameResponse) {};
+  rpc AddAsymmetricReelsSlotsGameSymbol(AddAsymmetricReelsSlotsGameSymbolRequest) returns (AddSlotsGameSymbolResponse) {};
+  rpc UpdateAsymmetricReelsSlotsGameSymbol(UpdateAsymmetricReelsSlotsGameSymbolRequest) returns (UpdateSlotsGameSymbolResponse) {};
+
+  rpc GetGameProgress(GetGameProgressRequest) returns (GetGameProgressResponse) {};
+  rpc GetGame(GetGameRequest) returns (GetGameResponse) {};
+  rpc GetAllGameIds(GetAllGameIdsRequest) returns (GetAllGameIdsResponse) {};
+
+  rpc SelectPayline(SelectPaylineRequest) returns (SelectPaylineResponse) {};
+  rpc SetBet(SetBetRequest) returns (SetBetResponse) {};
+  rpc CreatePayline(CreatePaylineRequest) returns (CreatePaylineResponse) {};
+  rpc RemovePayline(RemovePaylineRequest) returns (RemovePaylineResponse) {};
+
+  rpc Spin(SpinRequest) returns (SpinResponse) {};
+}
+
+service AccumulateMultiplierSlotsGameService {
+  rpc CreateGame(CreateAccumulateMultiplierSlotsGameRequest) returns (CreateGameResponse) {};
+  rpc UpdateGame(UpdateAccumulateMultiplierSlotsGameRequest) returns (UpdateGameResponse) {};
+  rpc UpdateAccumulateMultiplierScatterPrize(UpdateAccumulateMultiplierScatterPrizeRequest) returns (UpdateScatterPrizeResponse) {};
+
+  rpc AddSymbol(AddAccumulateMultiplierSlotsGameSymbolRequest) returns (AddSlotsGameSymbolResponse) {};
+  rpc UpdateSymbol(UpdateAccumulateMultiplierSlotsGameSymbolRequest) returns (UpdateSlotsGameSymbolResponse) {};
+
+  rpc GetGame(GetGameRequest) returns (GetGameResponse) {};
+
+  rpc GetGameProgress(GetGameProgressRequest) returns (GetGameProgressResponse) {};
+
+  rpc SetBet(SetBetRequest) returns (SetBetResponse) {};
+
+  rpc Spin(SpinRequest) returns (SpinResponse) {};
+}
+
+service AsymmetricReelsSlotsGameService {
+  rpc CreateGame(CreateAsymmetricReelsSlotsGameRequest) returns (CreateGameResponse) {};
+  rpc UpdateGame(UpdateAsymmetricReelsSlotsGameRequest) returns (UpdateGameResponse) {};
+  rpc UpdateSimpleScatterPrize(UpdateSimpleScatterPrizeRequest) returns (UpdateScatterPrizeResponse) {};
+  rpc CreatePayline(CreatePaylineRequest) returns (CreatePaylineResponse) {};
+  rpc RemovePayline(RemovePaylineRequest) returns (RemovePaylineResponse) {};
+
+
+  rpc AddSymbol(AddAsymmetricReelsSlotsGameSymbolRequest) returns (AddSlotsGameSymbolResponse) {};
+  rpc UpdateSymbol(UpdateAsymmetricReelsSlotsGameSymbolRequest) returns (UpdateSlotsGameSymbolResponse) {};
+
+  rpc GetGame(GetGameRequest) returns (GetGameResponse) {};
+
+  rpc GetGameProgress(GetGameProgressRequest) returns (GetGameProgressResponse) {};
+
+  rpc SelectPayline(SelectPaylineRequest) returns (SelectPaylineResponse) {};
+  rpc SetBet(SetBetRequest) returns (SetBetResponse) {};
+
+  rpc Spin(SpinRequest) returns (SpinResponse) {};
+}

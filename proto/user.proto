@@ -1,0 +1,235 @@
+syntax = "proto3";
+
+package schema;
+
+option java_multiple_files = true;
+option java_package = "user.service.core.protobuf.user";
+option java_outer_classname = "UserProtobuf";
+option go_package = "models/";
+import "google/protobuf/timestamp.proto";
+
+message AdminModel {
+
+}
+
+message PlayerModel {
+  string display_name = 1;
+  double current_gold_coins = 2;
+  double current_sweep_coins = 3;
+  CurrencyModel current_currency = 4;
+  string city = 5;
+  string state = 6;
+  string avatar_url = 7;
+  bool email_verified = 8;
+  bool phone_number_verified = 9;
+}
+
+message UserModel {
+  int64 id = 1;
+  string username = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string phone_number = 5;
+  string email = 6;
+  bool is_locked = 7;
+  RoleModel role = 8;
+  oneof user_data {
+    PlayerModel player = 9;
+    AdminModel admin = 10;
+  }
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+  google.protobuf.Timestamp deleted_at = 13;
+}
+
+
+enum RoleModel {
+  ROLE_UNDEFINED = 0;
+  ROLE_PLAYER = 1;
+  ROLE_ADMIN = 2;
+}
+
+enum CurrencyModel {
+  CURRENCY_UNDEFINED = 0;
+  CURRENCY_GOLD_COINS = 1;
+  CURRENCY_SWEEP_COINS = 2;
+}
+
+message CreatePlayerRequest {
+  string username = 2;
+  string password = 3;
+  string first_name = 4;
+  string last_name = 5;
+  string display_name = 6;
+  string phone_number = 7;
+  string email = 8;
+  string city = 9;
+  string state = 10;
+}
+
+message CreatePlayerResponse {
+  UserModel user = 1;
+}
+
+message ChangeDisplayNameRequest {
+  string display_name = 5;
+}
+
+message ChangeDisplayNameResponse {
+  UserModel user = 1;
+}
+
+message UpdateEmailRequest {
+  string email = 1;
+}
+
+message UpdateEmailResponse {
+  UserModel user = 1;
+}
+
+message UpdatePhoneNumberRequest {
+  string phone_number = 1;
+}
+
+message UpdatePhoneNumberResponse {
+  UserModel user = 1;
+}
+
+message DeletePlayerRequest {
+}
+
+message DeletePlayerResponse {
+  bool success = 1;
+}
+
+message CheckUsernamePasswordRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message CheckUsernamePasswordResponse {
+  UserModel user = 1;
+}
+
+message FindUserByIdRequest {
+  int64 user_id = 1;
+}
+
+message FindUserByIdResponse {
+  UserModel user = 1;
+}
+
+
+message VerifyEmailRequest {
+  string otp = 1;
+}
+
+message VerifyEmailResponse {
+  bool result = 1;
+  UserModel user = 2;
+}
+
+message VerifyPhoneNumberRequest {
+  string otp = 1;
+}
+
+message VerifyPhoneNumberResponse {
+  bool result = 1;
+  UserModel user = 2;
+}
+
+message ChangePasswordRequest {
+  string old_password = 1;
+  string new_password = 2;
+}
+
+message ChangePasswordResponse {
+  bool success = 1;
+}
+
+message ChangeCurrencyRequest {
+  CurrencyModel new_currency = 1;
+}
+
+message ChangeCurrencyResponse {
+  UserModel user = 1;
+}
+
+message UploadAvatarRequest {
+  bytes data = 1;
+}
+
+message UploadAvatarResponse {
+  UserModel user = 1;
+}
+
+message SendOTPRequest {
+  OTPType type = 1;
+}
+
+enum OTPType {
+  OTP_TYPE_UNDEFINED = 0;
+  OTP_TYPE_EMAIL = 1;
+  OTP_TYPE_PHONE_NUMBER = 2;
+}
+
+message SendOTPResponse {
+  bool result = 1;
+}
+
+message GetCurrentUserRequest {
+}
+
+message GetCurrentUserResponse {
+  UserModel user = 1;
+}
+
+message AddCoinsToPlayerRequest {
+  double gold_coins = 1;
+  double sweep_coins = 2;
+  int64 user_id = 3;
+}
+
+message AddCoinsToPlayerResponse {
+  UserModel user = 1;
+}
+
+message ReduceCoinsToPlayerRequest {
+  double gold_coins = 1;
+  double sweep_coins = 2;
+  int64 user_id = 3;
+}
+
+message ReduceCoinsToPlayerResponse {
+  UserModel user = 1;
+}
+
+service UserService {
+  rpc CreatePlayer(CreatePlayerRequest) returns (CreatePlayerResponse) {};
+  // player only
+  rpc ChangeDisplayName(ChangeDisplayNameRequest) returns (ChangeDisplayNameResponse) {};
+  // only available when email_verified == false
+  rpc UpdateEmail(UpdateEmailRequest) returns (UpdateEmailResponse) {};
+  // only available when phone_number_verified == false
+  rpc UpdatePhoneNumber(UpdatePhoneNumberRequest) returns (UpdatePhoneNumberResponse) {};
+  rpc DeletePlayer(DeletePlayerRequest) returns (DeletePlayerResponse) {};
+  rpc CheckUsernamePassword(CheckUsernamePasswordRequest) returns (CheckUsernamePasswordResponse) {};
+  rpc FindUserById(FindUserByIdRequest) returns (FindUserByIdResponse) {};
+  // player only
+  rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse) {};
+  // player only
+  rpc VerifyPhoneNumber(VerifyPhoneNumberRequest) returns (VerifyPhoneNumberResponse) {};
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {};
+  // player only
+  rpc ChangeCurrency(ChangeCurrencyRequest) returns (ChangeCurrencyResponse) {};
+  // player only
+  rpc UploadAvatar(stream UploadAvatarRequest) returns (UploadAvatarResponse) {};
+  // player only
+  rpc SendOTP(SendOTPRequest) returns (SendOTPResponse) {};
+  rpc GetCurrentUser(GetCurrentUserRequest) returns (GetCurrentUserResponse) {};
+
+  //for recharge service
+  rpc AddCoinsToPlayer(AddCoinsToPlayerRequest) returns (AddCoinsToPlayerResponse) {};
+
+  rpc ReduceCoinsToPlayer(ReduceCoinsToPlayerRequest) returns (ReduceCoinsToPlayerResponse) {};
+}

@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package schema;
+
+import "user.proto";
+
+option java_package = "com.gadgame.schema.protobuf";
+option java_outer_classname = "Authentication";
+option go_package = "models/";
+
+message LoginRequest{
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse{
+  UserModel user = 1;
+  string token = 2;
+  string refreshToken = 3;
+}
+
+message RefreshTokenRequest {
+}
+
+message RefreshTokenResponse {
+  UserModel user = 1;
+  string token = 2;
+  string refreshToken = 3;
+}
+
+message ValidateTokenRequest {
+  string token = 1;
+}
+
+message ValidateTokenResponse {
+  int64 user_id = 1;
+  string role = 2;
+  string username = 3;
+  string email = 4;
+  string phone_number = 5;
+  bool email_verified = 6;
+  bool phone_number_verified = 7;
+}
+
+service AuthService{
+  rpc Login(LoginRequest) returns (LoginResponse) {};
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {};
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {};
+}

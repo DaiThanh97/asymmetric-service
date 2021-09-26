@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package schema;
+
+option java_multiple_files = true;
+option java_package = "com.gadgame.schema.protobuf";
+option java_outer_classname = "ScatterPrize";
+option go_package = "models/";
+
+message ScatterPrizeModel {
+  string id = 1;
+  oneof prize {
+    SimpleScatterPrize simple_scatter_prize = 2;
+    AccumulateMultiplierScatterPrize accumulate_multiplier_scatter_prize = 3;
+  }
+}
+
+message SimpleScatterPrize {
+  int32 free_spins = 1;
+  double prize = 2;
+  double free_spins_multiplier = 3;
+  double current_spin_multiplier = 4;
+}
+
+message UpdateSimpleScatterPrizeRequest {
+  string game_id = 1;
+  string prize_id = 2;
+  int32 free_spins = 3;
+  double prize = 4;
+  double free_spins_multiplier = 5;
+  double current_spin_multiplier = 6;
+}
+
+message AccumulateMultiplierScatterPrize {
+  int32 initial_free_spins = 1;
+  double initial_free_spin_multiplier = 2;
+  int32 accumulated_free_spins = 3;
+  double accumulated_free_spin_multiplier = 4;
+}
+
+message UpdateAccumulateMultiplierScatterPrizeRequest {
+  string game_id = 1;
+  string prize_id = 2;
+  int32 initial_free_spins = 3;
+  double initial_free_spin_multiplier = 4;
+  int32 accumulated_free_spins = 5;
+  double accumulated_free_spin_multiplier = 6;
+}
+
+message UpdateScatterPrizeResponse {
+  ScatterPrizeModel scatter_prize = 1;
+}

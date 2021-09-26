@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package schema;
+
+option java_multiple_files = true;
+option java_package = "com.gadgame.schema.protobuf";
+option java_outer_classname = "SlotGameProgress";
+option go_package = "models/";
+import "games/slotsgames/symbol.proto";
+import "games/slotsgames/payline.proto";
+
+
+message SlotsGameProgressModel {
+  double current_bet = 1;
+  int32 free_spins_available = 2;
+  double free_spins_prize_multiplier = 3;
+  oneof progress {
+    PaylineSlotsGameProgressModel payline_slots_game_progress = 4;
+    WaySlotsGameProgressModel way_slots_game_progress = 5;
+  }
+}
+
+message PaylineSlotsGameProgressModel {
+  repeated PaylineModel betting_paylines = 1;
+  oneof progress {
+    AsymmetricReelsSlotsGameProgressModel asymmetric_reels_slots_game_progress = 2;
+  }
+}
+
+message WaySlotsGameProgressModel {
+  oneof progress {
+    AccumulateMultiplierSlotsGameProgressModel accumulate_multiplier_slots_game_progress = 1;
+  }
+}
+
+
+message AsymmetricReelsSlotsGameProgressModel {
+  SlotsGameSymbolModel first_column_symbol_id = 1;
+  SlotsGameSymbolModel last_column_symbol_id = 2;
+}
+
+message AccumulateMultiplierSlotsGameProgressModel {
+  double accumulate_multiplier = 1;
+}

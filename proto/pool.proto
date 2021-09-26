@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package schema;
+
+option java_package = "com.gadgame.schema.protobuf";
+option java_outer_classname = "Pool";
+option go_package = "models/";
+import "user.proto";
+
+message PoolModel {
+  int64 id = 1;
+  double minimum_payout = 2;
+  double current_value = 3;
+  double pool_acquire_ratio = 4;
+  CurrencyModel currency = 5;
+}
+
+message CreatePoolRequest {
+  double minimum_payout = 1;
+  double current_value = 2;
+  double pool_acquire_ratio = 3;
+  CurrencyModel currency = 4;
+}
+
+message CreatePoolResponse {
+  PoolModel pool = 1;
+}
+
+message UpdatePoolRequest {
+  int64 id = 1;
+  double minimum_payout = 2;
+  double current_value = 3;
+  double pool_acquire_ratio = 4;
+}
+
+message UpdatePoolResponse {
+  PoolModel pool = 1;
+}
+
+message DeletePoolRequest {
+  int64 id = 1;
+}
+
+message DeletePoolResponse {
+  bool success = 1;
+}
+
+message AddCoinsToPoolRequest {
+  double coins = 1;
+  CurrencyModel currency = 2;
+}
+
+message ReduceCoinsToPoolRequest {
+  double coins = 1;
+  CurrencyModel currency = 2;
+}
+
+message AddCoinsToPoolResponse {
+}
+
+message ReduceCoinsToPoolResponse {
+}
+
+message GetAllPoolsRequest {
+
+}
+
+message GetAllPoolsResponse {
+  repeated PoolModel pools = 1;
+}
+
+service PoolService {
+  rpc CreatePool(CreatePoolRequest) returns (CreatePoolResponse) {};
+  rpc UpdatePool(UpdatePoolRequest) returns (UpdatePoolResponse) {};
+  rpc DeletePool(DeletePoolRequest) returns (DeletePoolResponse) {};
+  rpc GetAllPools(GetAllPoolsRequest) returns (GetAllPoolsResponse) {};
+  rpc AddCoinsToPool(AddCoinsToPoolRequest) returns (AddCoinsToPoolResponse) {};
+  rpc ReduceCoinsToPool(ReduceCoinsToPoolRequest) returns (ReduceCoinsToPoolResponse) {};
+}

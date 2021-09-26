@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package schema;
+
+option java_package = "com.gadgame.schema.protobuf";
+option java_outer_classname = "Setting";
+option go_package = "models/";
+
+message SettingsModel {
+  float usdToGoldCoins = 1;
+  float usdToSweepCoins = 2;
+  int32 dailyRewardExpireDays = 3;
+  float dailyRewardValueInUsd = 4;
+  float signUpRewardValueInUsd = 5;
+  float goldCoinHoldRate = 6;
+  float sweepCoinHoldRate = 7;
+  float goldCoinJackpotContribution = 8;
+  float sweepCoinJackpotContribution = 9;
+  float goldCoinMinimumJackpot = 10;
+  float sweepCoinMinimumJackpot= 11;
+}
+
+message GetSettingsRequest {}
+
+message GetSettingsResponse {
+  SettingsModel settings = 1;
+}
+
+message UpdateSettingsRequest {
+  SettingsModel settings = 1;
+}
+
+message UpdateSettingsResponse {
+  SettingsModel settings = 1;
+}
+
+service SettingService {
+  rpc GetSettings(GetSettingsRequest) returns (GetSettingsResponse) {};
+  rpc UpdateSettings(UpdateSettingsRequest) returns (UpdateSettingsResponse) {};
+}

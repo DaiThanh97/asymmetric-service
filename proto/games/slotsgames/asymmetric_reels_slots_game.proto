@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package schema;
+
+option java_multiple_files = true;
+option java_package = "com.gadgame.schema.protobuf";
+option java_outer_classname = "AsymmetricReelsSlotsGame";
+option go_package = "models/";
+
+message AsymmetricReelsSlotsGameModel {
+  double asymmetricChance = 1;
+}
+
+message CreateAsymmetricReelsSlotsGameRequest {
+  string game_name = 1;
+  repeated double available_gold_coins_bet_values = 2;
+  repeated double available_sweep_coins_bet_values = 3;
+  repeated int32 row_counts = 4;
+  double asymmetric_chance = 5;
+}
+
+message UpdateAsymmetricReelsSlotsGameRequest {
+  string game_id = 1;
+  string game_name = 2;
+  repeated double available_gold_coins_bet_values = 3;
+  repeated double available_sweep_coins_bet_values = 4;
+  repeated int32 row_counts = 5;
+  double asymmetric_chance = 6;
+}

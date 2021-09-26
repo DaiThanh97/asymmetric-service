@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package schema;
+
+option java_package = "com.gadgame.schema.protobuf";
+option java_outer_classname = "Payment";
+option go_package = "models/";
+import "google/protobuf/timestamp.proto";
+
+message TransactionModel {
+  int64 id = 1;
+  string user_id = 2;
+  double amount_in_usd = 3;
+  double transaction_sweep_coins = 4;
+  double transaction_gold_coins = 5;
+  PaymentType payment_type = 6;
+  string payment_id = 7;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+  google.protobuf.Timestamp deleted_at = 11;
+}
+
+enum PaymentType {
+  PAYMENT_TYPE_UNDEFINED = 0;
+  PAYMENT_TYPE_STRIPE = 1;
+  PAYMENT_TYPE_SKRILL = 2;
+}
+
+message RechargeWithSkrillRequest {
+  double amount_in_usd = 1;
+}
+
+message RechargeWithSkrillResponse {
+  int64 id = 1;
+  string user_id = 2;
+  double amount_in_usd = 3;
+  string session_id = 4;
+  string payment_link = 5;
+}
+
+message RechargeWithStripeRequest {
+  double amount_in_usd = 2;
+  string description = 3;
+  string stripe_token = 4;
+}
+
+message RechargeWithStripeResponse {
+  TransactionModel transaction = 1;
+}
+
+message GetAllTransactionRequest {
+  google.protobuf.Timestamp from = 1;
+  google.protobuf.Timestamp to = 2;
+}
+
+message GetAllTransactionResponse {
+  repeated TransactionModel transactions = 1;
+}
+
+message UpdateSkrillTransactionStatusRequest {
+  int64 transaction_id = 1;
+  SkrillStatusModel status = 2;
+}
+
+message UpdateSkrillTransactionStatusResponse {
+  bool success = 1;
+}
+
+enum SkrillStatusModel {
+  STATUS_UNDEFINED = 0;
+  STATUS_CREATED = 1;
+  STATUS_PENDING = 2;
+  STATUS_FAILED = 3;
+  STATUS_CANCELLED = 4;
+  STATUS_PROCESSED = 5;
+}
+
+service PaymentService {
+  rpc RechargeWithStripe(RechargeWithStripeRequest) returns (RechargeWithStripeResponse) {};
+  rpc RechargeWithSkrill(RechargeWithSkrillRequest) returns (RechargeWithSkrillResponse) {};
+  rpc GetAllTransaction(GetAllTransactionRequest) returns (GetAllTransactionResponse) {};
+  rpc UpdateSkrillTransactionStatus(UpdateSkrillTransactionStatusRequest) returns (UpdateSkrillTransactionStatusResponse) {};
+}

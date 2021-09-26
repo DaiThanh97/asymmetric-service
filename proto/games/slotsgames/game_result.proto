@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package schema;
+
+option java_multiple_files = true;
+option java_package = "com.gadgame.schema.protobuf";
+option java_outer_classname = "SlotGameResult";
+option go_package = "models/";
+import "games/slotsgames/symbol.proto";
+import "games/slotsgames/payline.proto";
+
+
+message SlotsGameResultModel {
+  repeated SlotsGameSymbolModel slots_matrix = 1;
+  double won_money = 2;
+  bool jackpot_won = 3;
+  oneof result {
+    PaylineSlotsGameResultModel payline_slots_game_result = 4;
+    WaySlotsGameResultModel way_slots_game_result = 5;
+  }
+}
+
+message PaylineSlotsGameResultModel {
+  repeated PaylineModel won_paylines = 1;
+  oneof result {
+    AsymmetricReelsSlotsGameResultModel asymmetric_reels_slots_game_result = 2;
+  }
+}
+
+message WaySlotsGameResultModel {
+  oneof result {
+    AccumulateMultiplierSlotsGameResultModel accumulate_multiplier_slots_game_result = 1;
+  }
+}
+
+
+message AsymmetricReelsSlotsGameResultModel {
+}
+
+message AccumulateMultiplierSlotsGameResultModel {
+}
